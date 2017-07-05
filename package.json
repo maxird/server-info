@@ -9,6 +9,6 @@
   "author": "ryan",
   "license": "UNLICENSED",
   "dependencies": {
-    "restify": "^4.3.0"
+    "restify": "^4.3.1"
   }
 }

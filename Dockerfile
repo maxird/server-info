@@ -1,4 +1,4 @@
-FROM maxird/node:7-6.10.0
+FROM maxird/node:7-6
 
 ADD . /app
 
