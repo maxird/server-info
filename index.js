@@ -19,10 +19,20 @@ const networks = () => {
 }
 
 server.get('/', (req, res, next) => {
-  res.json({
+  const data = {
     name: os.hostname(),
-    net: networks()
+    net: networks(),
+    headers: req.headers
+  }
+  const body = JSON.stringify(data, null, 2) + '\n'
+
+  res.writeHead(200, {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(body)
   })
+
+  res.write(body)
+  res.end()
   return next()
 })
 
