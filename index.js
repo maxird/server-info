@@ -19,7 +19,9 @@ const networks = () => {
 }
 
 server.get('/', (req, res, next) => {
+  const now = (new Date()).toISOString()
   const data = {
+    ts: `${now}`,
     name: os.hostname(),
     net: networks(),
     headers: req.headers
