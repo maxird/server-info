@@ -8,4 +8,4 @@ RUN npm install --production
 
 ENV PORT 80
 
-ENTRYPOINT ["node", "index.js"]
+CMD ["node", "index.js"]
