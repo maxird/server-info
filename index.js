@@ -18,6 +18,18 @@ const networks = () => {
   return list
 }
 
+server.get('/health', (req, res, next) => {
+  const body = JSON.stringify({ ok: true }) + '\n'
+
+  res.writeHead(200, {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(body)
+  })
+  res.write(body)
+  res.end()
+  return next()
+})
+
 server.get('/', (req, res, next) => {
   const now = (new Date()).toISOString()
   const data = {
