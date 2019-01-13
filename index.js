@@ -9,8 +9,8 @@ const server = restify.createServer({
   // as a demo, let's format responses
   //
   formatters: {
-    'application/json': (req, res, body, next) => {
-      return next(null, JSON.stringify(body, null, 2))
+    'application/json': (req, res, body) => {
+      return JSON.stringify(body, null, 2)
     }
   }
 })
