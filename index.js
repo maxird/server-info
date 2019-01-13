@@ -1,9 +1,19 @@
-'use strict'
-
+// @ts-check
+//
 const restify = require('restify')
 const os = require('os')
 
-const server = restify.createServer({})
+const NAME = process.env.NAME || 'unnamed'
+const server = restify.createServer({
+  name: NAME,
+  // as a demo, let's format responses
+  //
+  formatters: {
+    'application/json': (req, res, body, next) => {
+      return next(null, JSON.stringify(body, null, 2))
+    }
+  }
+})
 
 const networks = () => {
   const info = os.networkInterfaces()
@@ -18,15 +28,36 @@ const networks = () => {
   return list
 }
 
-server.get('/health', (req, res, next) => {
-  const body = JSON.stringify({ ok: true }) + '\n'
+function healthy() {
+  return { healthy: true }
+}
 
-  res.writeHead(200, {
-    'Content-Type': 'application/json',
-    'Content-Length': Buffer.byteLength(body)
-  })
-  res.write(body)
-  res.end()
+function ready() {
+  const result = Object.assign({}, healthy(), { ready: false })
+
+  // skip out if we are not healthy
+  //
+  if (!result.healthy)
+    return result
+
+  // now decide if we are ready
+  //
+  result.ready = true
+
+  return result
+}
+
+server.get('/health', (req, res, next) => {
+  const body = healthy()
+  const status = body.healthy ? 200 : 503
+  res.json(status, body)
+  return next()
+})
+
+server.get('/ready', (req, res, next) => {
+  const body = ready()
+  const status = body.ready ? 200 : 503
+  res.json(status, body)
   return next()
 })
 
@@ -34,22 +65,16 @@ server.get('/', (req, res, next) => {
   const now = (new Date()).toISOString()
   const data = {
     ts: `${now}`,
-    name: os.hostname(),
+    name: `${NAME}`,
+    host: os.hostname(),
     net: networks(),
     headers: req.headers
   }
-  const body = JSON.stringify(data, null, 2) + '\n'
 
-  res.writeHead(200, {
-    'Content-Type': 'application/json',
-    'Content-Length': Buffer.byteLength(body)
-  })
-
-  res.write(body)
-  res.end()
+  res.json(200, data)
   return next()
 })
 
-server.listen(process.env.PORT || 8774, '0.0.0.0', (err) => {
+server.listen(process.env.PORT || 80, '0.0.0.0', (err) => {
   console.log(`listening on ${server.name} at ${server.url}`)
 })

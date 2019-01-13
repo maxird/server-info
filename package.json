@@ -4,11 +4,31 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "author": "ryan",
   "license": "UNLICENSED",
   "dependencies": {
-    "restify": "^4.3.1"
+    "restify": "^7.5.0"
+  },
+  "jshintConfig": {
+    "esversion": 6,
+    "asi": true
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "globals": {
+      "process": true,
+      "__dirname": true,
+      "console": true
+    },
+    "rules": {
+      "max-len": [2, 132, 2],
+      "semi": [2, "never"]
+    }
   }
+
 }
